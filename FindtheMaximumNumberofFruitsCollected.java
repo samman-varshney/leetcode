@@ -1,5 +1,5 @@
 import java.util.*;
-class NewSolution {
+class Solution {
     HashMap<String, Integer> map;
     int n;
     int[][] c1 = {{1, -1}, {1, 0}, {1, 1}};
@@ -63,7 +63,7 @@ class NewSolution {
 public class FindtheMaximumNumberofFruitsCollected {
     public static void main(String[] args) {
         int[][]  fruits = {{1,2,3,4},{5,6,8,7},{9,10,11,12},{13,14,15,16}};
-        NewSolution s = new NewSolution();
+        Solution s = new Solution();
         System.out.println(s.maxCollectedFruits(fruits));
 
     }
