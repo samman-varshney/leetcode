@@ -1,4 +1,4 @@
-class Solution {
+class MySolution_1 {
     public int findUpperBound(int[][] fruits, int val){
         int n = fruits.length;
         int start = 0, end = n-1;
@@ -77,7 +77,7 @@ class Solution {
 public class MaximumFruitsHarvestedAfteratMostKSteps
 {
 	public static void main(String[] args) {
-		Solution s = new Solution();
+		MySolution_1 s = new MySolution_1();
 		int[][] fruits = {{200000,10000}};
         int init = 0;
         int k = 200000;
