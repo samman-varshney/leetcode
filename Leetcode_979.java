@@ -37,7 +37,7 @@ class Node {
  }
 class MySolution_979 {
         int moves;
-    public int helper(TreeNode root){
+    public int helper(Node root){
         if( root == null )return 0;
 
         int left = helper(root.left);
@@ -46,7 +46,7 @@ class MySolution_979 {
         moves += Math.abs(left)+Math.abs(right);
         return root.val + left + right - 1;
     }
-    public int distributeCoins(TreeNode root) {
+    public int distributeCoins(Node root) {
         moves = 0;
         helper(root);
         return moves;
