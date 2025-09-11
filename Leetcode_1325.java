@@ -1,6 +1,4 @@
 
-import java.util.*;
-
 public class Leetcode_1325 {
     /**
      * Definition for a binary tree node.
