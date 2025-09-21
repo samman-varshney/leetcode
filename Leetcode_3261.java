@@ -7,54 +7,55 @@ public class Leetcode_3261 {
         System.out.println(Arrays.toString(res));
     }
 }
+
+
 class solution_3261 {
-    public int upperBound(int[] arr, int val){
-        int n = arr.length;
-        int start = 0, end = n-1;
-        while(start <= end){
-            int mid = start + (end - start)/2;
-            if(arr[mid] >= val){
-                end = mid-1;
-            }else{
-                start = mid+1;
-            }
-        }
-        return start;
-    }
+
     public long[] countKConstraintSubstrings(String s, int k, int[][] queries) {
         int n = s.length();
-        int m = queries.length;
-        int[] ones = new int[n+1];
-        int[] zeros = new int[n+1];
+     
+        int[] d = new int[n];
+        Arrays.fill(d, n);
 
-        for(int i=0; i<n; i++){
-            ones[i+1] = ones[i] + (s.charAt(i) == '1'? 1: 0);
-            zeros[i+1] = zeros[i] + (s.charAt(i) == '0'? 1: 0);
-        }
+        long[] pre = new long[n + 1]; 
+        int[] cnt = new int[2]; 
+         int left = 0;
 
-        long[] res = new long[m];
-         
-        for(int j=0; j<m; j++){
+        for (int right = 0; right < n; right++) {
+            char c = s.charAt(right);
+            cnt[c - '0']++;
 
-            int l = queries[j][0];
-            int r = queries[j][1];
-            long count = 0;
-            int i=l+1;
-            while(i<= r+1){
-
-                int min = Math.min(ones[i]-ones[l], zeros[i]-zeros[l]);
-                if(min <= k){
-                    count += i-l;
-                    i++;
-                }else{
-                    int ol = upperBound(ones, ones[i]-k);
-                    int zl = upperBound(zeros, zeros[i]-k);
-
-                    l = Math.min(ol, zl);
-                }
+    
+            while (cnt[0] > k && cnt[1] > k) {
+              
+                d[left] = right;
+                
+                cnt[s.charAt(left) - '0']--;
+                left++;
             }
-            res[j] = count;
+
+            
+            pre[right + 1] = pre[right] + (right - left + 1);
         }
-        return res;
+
+        
+        int q = queries.length;
+        long[] ans = new long[q];
+        for (int qi = 0; qi < q; qi++) {
+            int l = queries[qi][0];
+            int r = queries[qi][1];
+
+           int pivot = Math.min(r + 1, d[l]);
+
+            long len = (pivot - l);  
+            long partA = len * (len + 1) / 2;  
+            long partB = pre[r + 1] - pre[pivot];
+
+            ans[qi] = partA + partB;
+        }
+
+        return ans;
     }
 }
+
+  
