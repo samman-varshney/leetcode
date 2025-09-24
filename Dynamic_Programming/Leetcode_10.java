@@ -1,5 +1,5 @@
 package Dynamic_Programming;
-import java.util.*;
+// import java.util.*;
 
 public class Leetcode_10 {
     class Solution {
@@ -7,7 +7,7 @@ public class Leetcode_10 {
     public boolean isMatch(String s, String p) {
         int n = s.length();
         int m = p.length();
-        StringBuilder pat = new StringBuilder();
+        // StringBuilder pat = new StringBuilder();
         for(int i=0; i<m; i++){
 
         }
