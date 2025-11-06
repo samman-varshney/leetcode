@@ -1,32 +1,70 @@
+class DisjointSet{
+    int[] parent, size;
+    DisjointSet(int n){
+        parent = new int[n];
+        size = new int[n];
+
+        for(int i=0; i<n; i++){
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    void union(int u, int v){
+        int pv = find(v);
+        int pu = find(u);
+
+        if(pu == pv)return;
+        else if(size[pv] > size[pu]){
+            parent[pu] = pv;
+            size[pv] += size[pu];
+        }else{
+            parent[pv] = pu;
+            size[pu] += size[pv];
+        }
+    }
+    int find(int u){
+        if(parent[u] == u){
+            return u;
+        }
+        return parent[u] = find(parent[u]);
+    }
+
+}
+class Pair{
+    int wt, curr, parent;
+    Pair(int wt, int curr, int parent){
+        this.wt = wt;
+        this.curr = curr;
+        this.parent = parent;
+    }
+}
 class Solution {
     public int minCostConnectPoints(int[][] points) {
         int n = points.length;
-        int[] dist  = new int[n];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        boolean[] mst = new boolean[n];
-        int totalcost  = 0;
-        dist[0] = 0;
-
+        List<Pair> edges = new ArrayList<>();
         for(int i=0; i<n; i++){
-            int u = -1;
-            for(int v=0; v<n; v++){
-                if(!mst[v] && (u==-1 || dist[u] > dist[v])){
-                    u = v;
-                }
-            }
+            for(int j=0; j<n; j++){
+                if(i == j)continue;
 
-            mst[u] = true;
-            totalcost += dist[u];
-
-            for(int v=0; v<n; v++){
-                if(!mst[v]){
-                    int cost = Math.abs(points[v][0] - points[u][0]) + Math.abs(points[v][1] - points[u][1]);
-                    if(dist[v] > cost){
-                        dist[v] = cost;
-                    }
-                }
+                int dist = Math.abs(points[i][0] - points[j][0])+ Math.abs(points[i][1] - points[j][1]);
+                edges.add(new Pair(dist, j, i));
             }
         }
+        Collections.sort(edges, (a, b)->(a.wt-b.wt));
+
+        DisjointSet d = new DisjointSet(n);
+        int totalcost = 0;
+        for(Pair p : edges){
+            int wt = p.wt;
+            int u = p.curr;
+            int v = p.parent;
+
+            if(d.find(u) != d.find(v)){
+                d.union(u, v);
+                totalcost+=wt;
+            }
+        }   
 
         return totalcost;
     }
