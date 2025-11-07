@@ -1,44 +1,63 @@
+import java.util.*;
+
 class Solution {
     int[] parent, size;
-    void union(int u, int v){
-        int pu = find(u);
-        int pv = find(v);
 
-        if(pu == pv)return;
-        else if(size[pu] > size[pv]){
-            size[pu] += size[pv];
-            parent[pv] = pu;
-        }else{
-            size[pv] += size[pu];
-            parent[pu] = pv;
-        }
-    }
-    int find(int u){
-        if(u == parent[u]){
-            return u;
-        }
+    // Find with path compression
+    int find(int u) {
+        if (u == parent[u]) return u;
         return parent[u] = find(parent[u]);
     }
+
+    // Union by size
+    void union(int u, int v) {
+        int pu = find(u);
+        int pv = find(v);
+        if (pu == pv) return;
+        if (size[pu] < size[pv]) {
+            int temp = pu;
+            pu = pv;
+            pv = temp;
+        }
+        parent[pv] = pu;
+        size[pu] += size[pv];
+    }
+
     public int longestConsecutive(int[] nums) {
-        int n = nums.length;
+        if (nums.length == 0) return 0;
+
+        // Remove duplicates
+        Set<Integer> set = new HashSet<>();
+        for (int num : nums) set.add(num);
+
+        int n = set.size();
         parent = new int[n];
         size = new int[n];
-        HashMap<Integer, Integer> map = new HashMap<>();
-        for(int i=0; i<n; i++){
-            parent[i] = i;
-            size[i] = 1;
-            map.put(nums[i], i);
-        } 
 
-        for(int key : map.keySet()){
-            if(map.containsKey(key-1)){
-                union(map.get(key), map.get(key-1));
+        // Map number -> index
+        Map<Integer, Integer> map = new HashMap<>();
+        int idx = 0;
+        for (int num : set) {
+            parent[idx] = idx;
+            size[idx] = 1;
+            map.put(num, idx++);
+        }
+
+        // Union consecutive numbers
+        for (int num : set) {
+            if (map.containsKey(num + 1)) {
+                union(map.get(num), map.get(num + 1));
             }
         }
-        int res = 0;
-        for(int i=0; i<n; i++){
-            res = Math.max(res, size[i]); 
+
+        // Find largest set size
+        int max = 0;
+        for (int i = 0; i < n; i++) {
+            if (i == parent[i]) { // only check roots
+                max = Math.max(max, size[i]);
+            }
         }
-        return res;
+
+        return max;
     }
 }
