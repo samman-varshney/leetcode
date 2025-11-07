@@ -79,10 +79,15 @@ class Solution {
                 break;
             }
         }
-
+        int cnt = 0;
         for(int i=n-1; i>=0; i--){
-            if(edges[i][1] == node && isSingleComponent(n, i, edges)){
-                return edges[i];
+            if(edges[i][1] == node ){
+                if(cnt == 1)
+                    return edges[i];
+                if(isSingleComponent(n, i, edges)){
+                    return edges[i];
+                }
+                cnt++;
             }
         }
 
@@ -133,3 +138,8 @@ class redundent {
         return new int[]{-1, -1};
     }
 }
+
+
+// 0 1 2
+// [0, 1, 2]
+// [1, 2, 3]
