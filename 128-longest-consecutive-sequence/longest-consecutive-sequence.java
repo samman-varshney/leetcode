@@ -34,9 +34,6 @@ class Solution {
             if(map.containsKey(key-1)){
                 union(map.get(key), map.get(key-1));
             }
-            if(map.containsKey(key+1)){
-                union(map.get(key), map.get(key+1));
-            }
         }
         int res = 0;
         for(int i=0; i<n; i++){
