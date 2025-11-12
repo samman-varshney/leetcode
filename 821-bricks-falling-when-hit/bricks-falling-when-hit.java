@@ -1,98 +1,97 @@
 class Solution {
-    int[][] D = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-    int[] parent, size;
-    void union(int u, int v){
-        int pu = find(u);
-        int pv = find(v);
-
-        if(pu == pv)return;
-        if(size[pu] >= size[pv]){
-            size[pu]+=size[pv];
-            parent[pv] = pu;
-        }else{
-            size[pv] += size[pu];
-            parent[pu] = pv;
-        }
-    }
-    int find(int u){
-        if(u == parent[u])
-            return u;
-        return parent[u] = find(parent[u]);
-    }
-
-    int countStable(int[][] copy){
-        int n = copy.length, m = copy[0].length;
-        int stable = 0;
-        HashSet<Integer> set = new HashSet<>();
-        
-        for(int i=0; i<m; i++){
-            // if there is a brick and it ultimate parent it not check then count the group size
-            if(copy[0][i] == 1 && !set.contains(find(i))){
-                stable += size[find(i)];
-                set.add(find(i));
-            }
-        }
-
-        return stable;
-    }
     public int[] hitBricks(int[][] grid, int[][] hits) {
+        int R = grid.length, C = grid[0].length;
+        int[] dr = {1, 0, -1, 0};
+        int[] dc = {0, 1, 0, -1};
 
-        int n = grid.length, m = grid[0].length;
-        parent = new int[n*m];
-        size = new int[n*m];
-        //initialise parent and size
-        for(int i=0; i<size.length; i++){
+        int[][] A = new int[R][C];
+        for (int r = 0; r < R; ++r)
+            A[r] = grid[r].clone();
+        for (int[] hit: hits)
+            A[hit[0]][hit[1]] = 0;
+
+        DSU dsu = new DSU(R*C + 1);
+        for (int r = 0; r < R; ++r) {
+            for (int c = 0; c < C; ++c) {
+                if (A[r][c] == 1) {
+                    int i = r * C + c;
+                    if (r == 0)
+                        dsu.union(i, R*C);
+                    if (r > 0 && A[r-1][c] == 1)
+                        dsu.union(i, (r-1) *C + c);
+                    if (c > 0 && A[r][c-1] == 1)
+                        dsu.union(i, r * C + c-1);
+                }
+            }
+        }
+        int t = hits.length;
+        int[] ans = new int[t--];
+
+        while (t >= 0) {
+            int r = hits[t][0];
+            int c = hits[t][1];
+            int preRoof = dsu.top();
+            if (grid[r][c] == 0) {
+                t--;
+            } else {
+                int i = r * C + c;
+                for (int k = 0; k < 4; ++k) {
+                    int nr = r + dr[k];
+                    int nc = c + dc[k];
+                    if (0 <= nr && nr < R && 0 <= nc && nc < C && A[nr][nc] == 1)
+                        dsu.union(i, nr * C + nc);
+                }
+                if (r == 0)
+                    dsu.union(i, R*C);
+                A[r][c] = 1;
+                ans[t--] = Math.max(0, dsu.top() - preRoof - 1);
+            }
+        }
+
+        return ans;
+    }
+}
+
+class DSU {
+    int[] parent;
+    int[] rank;
+    int[] sz;
+
+    public DSU(int N) {
+        parent = new int[N];
+        for (int i = 0; i < N; ++i)
             parent[i] = i;
-            size[i] = 1;
-        }
+        rank = new int[N];
+        sz = new int[N];
+        Arrays.fill(sz, 1);
+    }
 
-        //create a copy
-        int[][] copy = new int[n][m];
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                copy[i][j] = grid[i][j];
-            }
-        }
+    public int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
 
-        //perform all the hit operation
-        for(int i=0; i<hits.length; i++){
-            int x = hits[i][0], y = hits[i][1];
-            copy[x][y] = 0;
-        }
+    public void union(int x, int y) {
+        int xr = find(x), yr = find(y);
+        if (xr == yr) return;
 
-        //union all the remaining bricks
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                if(copy[i][j] == 1){
-                    for(int[] d : D){
-                        int x = i+d[0], y = j+d[1];
-                        if(x>=0 && x<n && y>=0 && y<m && copy[x][y] == 1){
-                            union(i*m+j, x*m+y);
-                        }
-                    }
-                }
-            }
+        if (rank[xr] < rank[yr]) {
+            int tmp = yr;
+            yr = xr;
+            xr = tmp;
         }
+        if (rank[xr] == rank[yr])
+            rank[xr]++;
 
-        //count the current stable bricks
-        int stable  = countStable(copy);
-        int[] res = new int[hits.length];
-        for(int i=hits.length-1; i>=0; i--){
-            int x = hits[i][0], y = hits[i][1];
-            //if there was really a brick there then mark it as 1 and perform other operation
-            if(grid[x][y]==1){
-                copy[x][y] = 1;
-                for(int[] d : D){
-                    int row = x+d[0], col = y+d[1];
-                    if(row>=0 && row<n && col>=0 && col<m && copy[row][col] == 1){
-                        union(x*m+y, row*m+col);
-                    }
-                }
-                int curr = countStable(copy);
-                res[i] = curr==stable?0:curr-stable-1;
-                stable = curr;
-            }
-        }
-        return res;
+        parent[yr] = xr;
+        sz[xr] += sz[yr];
+    }
+
+    public int size(int x) {
+        return sz[find(x)];
+    }
+
+    public int top() {
+        return size(sz.length - 1) - 1;
     }
 }
