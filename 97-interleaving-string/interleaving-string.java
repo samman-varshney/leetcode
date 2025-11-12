@@ -54,17 +54,17 @@ class Solution {
         if(n+m != s3.length)
             return false;
         
-        int[] freq1 = new int[26];
-        int[] freq2 = new int[26];
+        // int[] freq1 = new int[26];
+        // int[] freq2 = new int[26];
 
-        for(int i=0; i<n; i++)freq1[s1[i]-'a']++;
-        for(int i=0; i<m; i++)freq1[s2[i]-'a']++;
-        for(int i=0; i<n+m; i++)freq2[s3[i]-'a']++;
+        // for(int i=0; i<n; i++)freq1[s1[i]-'a']++;
+        // for(int i=0; i<m; i++)freq1[s2[i]-'a']++;
+        // for(int i=0; i<n+m; i++)freq2[s3[i]-'a']++;
 
-        for(int i=0; i<26; i++){
-            if(freq1[i] != freq2[i])
-                return false;
-        }
+        // for(int i=0; i<26; i++){
+        //     if(freq1[i] != freq2[i])
+        //         return false;
+        // }
         dp = new int[n+1][m+1][n+m+1];
         for(int[][] x: dp){
             for(int[] y: x){
