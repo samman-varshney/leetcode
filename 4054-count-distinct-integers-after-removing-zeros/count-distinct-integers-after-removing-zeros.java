@@ -3,12 +3,12 @@ class Solution {
         char[] nums = (""+num).toCharArray();
         int n = nums.length;
 
-        HashMap<Integer, Long> map = new HashMap<>();
+        long[] map = new long[n];
         long val = 1;
         long pre = -1;
         for(int i=0; i<n; i++){
             pre += val;
-            map.put(i, val);
+            map[i] = val;
             val *= 9;
         }
         long post = 0;
@@ -17,7 +17,7 @@ class Solution {
                 break;
             }
 
-            post += (nums[i]-(i==n-1?'0':'1'))*map.get(n-1-i);
+            post += (nums[i]-(i==n-1?'0':'1'))*map[n-1-i];
         }
 
         return pre + post;
