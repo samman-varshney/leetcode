@@ -1,53 +1,27 @@
 class Solution {
+    boolean possible(int pos, TreeSet<Integer> set){
+        if (set.contains(pos)) return false;
+
+        Integer nxt = set.higher(pos);
+        if (nxt == null) return true;
+
+        return nxt - pos >= 4;
+    }
     public int maxNumberOfFamilies(int n, int[][] rsvd) {
         int m = rsvd.length;
-        if (m == 0) return n * 2;
-
-        Arrays.sort(rsvd, (a, b) -> {
-            if (a[0] != b[0]) return a[0] - b[0];
-            return a[1] - b[1];
-        });
-
-        int res = 0;
-
-        int prev = 1;
-        int next = rsvd[0][0];
-
-        res += (next - prev) * 2;
-        prev = next;
-
-        int i = 0;
-        while (i < m) {
-
-            int j = i;
-            int[] row = new int[10];
-            while (j < m && rsvd[i][0] == rsvd[j][0]) {
-                row[rsvd[j][1] - 1] = -1;
-                j++;
-            }
-
-            // prefix array
-            int[] prefix = new int[11];
-            for (int k = 9; k >= 0; k--) {
-                if (row[k] == -1)
-                    prefix[k] = 0;
-                else
-                    prefix[k] = prefix[k + 1] + 1;
-            }
-
-            if (prefix[1] >= 4 && prefix[5] >= 4) {
-                res += 2;
-            } else if (prefix[1] >= 4 || prefix[5] >= 4 || prefix[3] >= 4) {
-                res += 1;
-            }
-
-            
-            next = (j < m) ? rsvd[j][0] : n + 1;
-            res += (next - prev - 1) * 2;
-            prev = next;
-            i = j;
+        HashMap<Integer, TreeSet<Integer>> map = new HashMap<>();
+        for(int[] x : rsvd){
+            map.computeIfAbsent(x[0], k->new TreeSet<>()).add(x[1]);
         }
+        int res = (n - map.size())*2;
+        for(TreeSet<Integer> set: map.values()){
+            boolean pos2 = possible(2, set);
+            boolean pos4 = possible(4, set);
+            boolean pos6 = possible(6, set);
 
+            if(pos2 && pos6)res+=2;
+            else if(pos2 || pos4 || pos6)res+=1;
+        }
         return res;
     }
 }
