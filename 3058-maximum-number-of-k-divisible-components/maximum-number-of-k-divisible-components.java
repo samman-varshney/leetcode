@@ -13,15 +13,11 @@ class Solution {
     int k;
     public Pair helper(int node, int parent){
         
-        List<Pair> children = new ArrayList<>();
-        for(int child : adj.get(node)){
-            if(child == parent)continue;
-            children.add(helper(child, node));
-        }
-
         long value = values[node];
         int split = 0;
-        for(Pair p : children){
+        for(int child : adj.get(node)){
+            if(child == parent)continue;
+            Pair p = helper(child, node);
             value += p.value;
             split += p.split;
         }
@@ -44,7 +40,7 @@ class Solution {
         this.k = k;
 
         Pair p = helper(0, -1);
-        // System.out.println(p.value+" "+p.split);
+        
         if(p.value == 0){
             return p.split;
         }
