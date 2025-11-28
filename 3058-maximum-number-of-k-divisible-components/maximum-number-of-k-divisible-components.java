@@ -1,49 +1,72 @@
-class Pair{
-    int split;
-    long value;
-
-    Pair(int split, long value){
-        this.split = split;
-        this.value = value;
-    }
-}
 class Solution {
-    List<List<Integer>> adj;
-    int[] values;
-    int k;
-    public Pair helper(int node, int parent){
-        
-        long value = values[node];
-        int split = 0;
-        for(int child : adj.get(node)){
-            if(child == parent)continue;
-            Pair p = helper(child, node);
-            value += p.value;
-            split += p.split;
+
+    public int maxKDivisibleComponents(
+        int n,
+        int[][] edges,
+        int[] values,
+        int k
+    ) {
+        if (n < 2) return 1; // Handle the base case where the graph has fewer than 2 nodes.
+
+        int componentCount = 0;
+        List<List<Integer>> graph = new ArrayList<>();
+        int[] inDegree = new int[n];
+
+        // Build the graph and calculate in-degrees
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>()); // Initialize the adjacency list for each node.
+        }
+        for (int[] edge : edges) {
+            int node1 = edge[0], node2 = edge[1];
+            graph.get(node1).add(node2);
+            graph.get(node2).add(node1);
+            inDegree[node1]++;
+            inDegree[node2]++;
         }
 
-        if(value%k == 0){
-            return new Pair(split+1, 0);
+        // Convert values to long to prevent overflow
+        long[] longValues = new long[n];
+        for (int i = 0; i < n; i++) {
+            longValues[i] = values[i];
         }
-        return new Pair(split, value);
-    }
-    public int maxKDivisibleComponents(int n, int[][] edges, int[] values, int k) {
-        this.adj = new ArrayList<>();
-        for(int i=0; i<n; i++){
-            adj.add(new ArrayList<>());
-        }
-        for(int[] edge : edges){
-            adj.get(edge[0]).add(edge[1]);
-            adj.get(edge[1]).add(edge[0]);
-        }
-        this.values = values;
-        this.k = k;
 
-        Pair p = helper(0, -1);
-        
-        if(p.value == 0){
-            return p.split;
+        // Initialize the queue with nodes having in-degree of 1 (leaf nodes)
+        Queue<Integer> queue = new LinkedList<>();
+        for (int node = 0; node < n; node++) {
+            if (inDegree[node] == 1) {
+                queue.offer(node);
+            }
         }
-        return 0;
+
+        while (!queue.isEmpty()) {
+            int currentNode = queue.poll();
+            inDegree[currentNode]--;
+
+            long addValue = 0;
+
+            // Check if the current node's value is divisible by k
+            if (longValues[currentNode] % k == 0) {
+                componentCount++;
+            } else {
+                addValue = longValues[currentNode];
+            }
+
+            // Propagate the value to the neighbor nodes
+            for (int neighborNode : graph.get(currentNode)) {
+                if (inDegree[neighborNode] == 0) {
+                    continue;
+                }
+
+                inDegree[neighborNode]--;
+                longValues[neighborNode] += addValue;
+
+                // If the neighbor node's in-degree becomes 1, add it to the queue
+                if (inDegree[neighborNode] == 1) {
+                    queue.offer(neighborNode);
+                }
+            }
+        }
+
+        return componentCount;
     }
 }
