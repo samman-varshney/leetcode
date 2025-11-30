@@ -1,29 +1,29 @@
 class Solution {
     public int minSubarray(int[] nums, int p) {
-        int n = nums.length;
-        long sum = 0;
-        for(int x : nums){
-            sum += x;
-        }
-        long k = sum%p;
-        if( k == 0 ){
-            return 0;
-        }
-    
-        int min = Integer.MAX_VALUE;
+        long total = 0;
+        for (int x : nums) total += x;
+
+        long need = total % p;
+        if (need == 0) return 0;
+
         HashMap<Long, Integer> map = new HashMap<>();
         map.put(0L, -1);
-        sum = 0;
-        for(int i=0; i<n; i++){
-            sum += nums[i];
-            long mod = sum%p;
-            if(mod >= k && map.containsKey(mod - k)){
-                min = Math.min(min, i - map.get(mod - k));
-            }else if(map.containsKey(p + mod - k)){
-                min = Math.min(min, i - map.get(p + mod - k));
+
+        long prefix = 0;
+        int ans = Integer.MAX_VALUE;
+
+        for (int i = 0; i < nums.length; i++) {
+            prefix = (prefix + nums[i]) % p;
+
+            long target = (prefix - need + p) % p;
+
+            if (map.containsKey(target)) {
+                ans = Math.min(ans, i - map.get(target));
             }
-            map.put(mod, i);
+
+            map.put(prefix, i);
         }
-        return min == Integer.MAX_VALUE || min == n ?-1:min;
+
+        return ans == Integer.MAX_VALUE || ans == nums.length ? -1 : ans;
     }
 }
