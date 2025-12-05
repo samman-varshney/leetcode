@@ -1,24 +1,20 @@
 class Solution {
     public int countCollisions(String d) {
-        Stack<Character> st = new Stack<>();
+        int r = 0, s = 0;
         int res = 0;
         for(int i=0; i<d.length(); i++){
-            char curr = d.charAt(i);
-
-            if( curr == 'R' ){
-                st.push(curr);
-            }else{
-                while(!st.isEmpty()){
-                    char prev = st.pop();
-                    if(prev == 'R'){
-                        res += curr=='L'?2:1;
-                        curr = 'S';
-                    }else{
-                        res += curr=='L'?1:0;
-                        curr = 'S';
-                    }
-                }
-                if(curr!='L')st.push(curr);
+            char c = d.charAt(i);
+            if(c == 'R'){
+                r+=1;
+                s = 0;
+            }else if(r != 0){
+                res += c == 'L'?r+1:r;
+                r = 0;
+                s = 1;
+            }else if(s== 1 && c == 'L'){
+                res += 1;
+            }else if(c == 'S'){
+                s = 1;
             }
         }
         return res;
