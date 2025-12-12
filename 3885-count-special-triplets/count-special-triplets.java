@@ -11,7 +11,7 @@ class Solution {
             map[nums[i]]++;
         } 
 
-        Arrays.fill(map, 0);
+        map = new long[1000000];
         long res = 0;
 
         for(int i=n-1; i>=0; i--){
