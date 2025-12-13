@@ -23,14 +23,9 @@ class Solution {
         return code.length()!=0;
     }
     public boolean isValidBusinessLine(String businessLine){
-        String[] valids = {"electronics", "grocery", "pharmacy", "restaurant"};
+        Set<String> valids = Set.of("electronics", "grocery", "pharmacy", "restaurant");
        
-        for(String valid: valids){
-            if(valid.equals(businessLine)){
-                return true;
-            }
-        }
-        return false;
+        return valids.contains(businessLine);
     }
     public List<String> validateCoupons(String[] code, String[] businessLine, boolean[] isActive) {
         int n = code.length;
