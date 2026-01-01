@@ -1,17 +1,17 @@
 class Solution {
     public int findMaximumXOR(int[] nums) {
-        HashSet<Integer> prefix_set = new HashSet<>();
+        Set<Integer> prefix_set = new HashSet<>();
         int mask = 0;
         int result = 0;
-        for(int i=31; i>=0; i--){
+        for(int i=31; i>=0; i--){//32
             mask = mask | (1<<i);
-            for(int num: nums){
+            for(int num: nums){//n
                 prefix_set.add(mask&num);
             }
 
             int temp = result | (1<<i);
-            for(int prefix: prefix_set){
-                if(prefix_set.contains(prefix^temp)){
+            for(int prefix: prefix_set){//n
+                if(prefix_set.contains(prefix^temp)){//logn
                     result = temp;
                     break;
                 }
