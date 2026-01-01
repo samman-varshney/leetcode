@@ -57,19 +57,7 @@ class Trie{
 
 }
 class Solution {
-    public int upperBound(int[] nums, int val){
-        int n = nums.length;
-        int start  = 0, end = n-1;
-        while(start <= end){
-            int mid = (end - start)/2 + start;
-            if(nums[mid] >= val){
-                end = mid-1;
-            }else{
-                start = mid+1;
-            }
-        }
-        return start;
-    }
+   
     public int maximumStrongPairXor(int[] nums) {
         int n = nums.length;
         Arrays.sort(nums);
@@ -79,12 +67,10 @@ class Solution {
         for(int j=0; j<n; j++){
 
             //remove num less the half of current element
-            int half = (nums[j]+1)/2;
-            int idx = upperBound(nums, half);
-            for(int k=i; k<idx; k++){
-                t.delete(nums[k]);
+            while(nums[i]*2 < nums[j]){
+                t.delete(nums[i]);
+                i++;
             }
-            i = idx;
 
             //insert current element
             t.insert(nums[j]);
