@@ -54,11 +54,9 @@ class Solution {
 
         //changing amount array according to bob path
         dfs1(0, -1, 1, adj, bob, amount);
-        // System.out.println(Arrays.toString(amount));
+        
         //getting max Score for alice path
-        long res = dfs2(0, -1, adj, amount);
-        // System.out.println(res);
-        return (int)res;
+        return (int)dfs2(0, -1, adj, amount);
 
     }
 }
