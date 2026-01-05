@@ -6,8 +6,9 @@ class Solution {
         long sum = 0;
         for(int i=0; i<n; i++){
             for(int j=0; j<n; j++){
-                sum += Math.abs(matrix[i][j]);
-                minMag = Math.min(Math.abs(matrix[i][j]), minMag);
+                int num = Math.abs(matrix[i][j]);
+                sum += num;
+                minMag = Math.min(num, minMag);
                 if(matrix[i][j] < 0){
                     countOfNegative++;
                 }
