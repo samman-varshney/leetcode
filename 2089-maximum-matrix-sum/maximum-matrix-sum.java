@@ -13,7 +13,7 @@ class Solution {
                 }
             }
         }
-        System.out.println(countOfNegative);
+   
         return sum - (countOfNegative%2==1?2*minMag:0);
     }
 }
