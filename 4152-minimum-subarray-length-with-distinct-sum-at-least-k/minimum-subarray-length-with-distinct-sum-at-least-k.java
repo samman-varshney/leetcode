@@ -1,7 +1,7 @@
 class Solution {
     public int minLength(int[] nums, int k) {
         int n = nums.length;
-        HashMap<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         int result = Integer.MAX_VALUE;
         int sum = 0;
         int j = 0;
