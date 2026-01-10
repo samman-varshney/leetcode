@@ -1,30 +1,54 @@
 class Solution {
+    int[] parent;
+    int[] nums;
+    public int find(int u){
+        if(nums[u] == 0 || parent[u] == u){
+            return u;
+        }
+        return parent[u] = find(parent[u]);
+    }
     public int[] avoidFlood(int[] rains) {
         int n = rains.length;
-        TreeSet<Integer> set = new TreeSet<>();
+        parent = new int[n];
+        nums = new int[n];
+    
+        for(int i=0; i<n; i++){
+            parent[i] = i;
+            nums[i] = rains[i];
+        }
+
+        int[] result = new int[n];
+        Arrays.fill(result, -1);
         HashMap<Integer, Integer> map = new HashMap<>();
 
-        int[] ans = new int[n];
-        Arrays.fill(ans, -1);
+        int lastZero = -1;
+        int prev = -1;
         for(int i=0; i<n; i++){
             if(rains[i] == 0){
-                set.add(i);
+                if(lastZero!=-1)parent[lastZero] = i;
+                if(prev!=-1 && nums[find(prev)]!=0)parent[prev] = i;
+                lastZero = i;
             }else{
                 int lastOccur = map.getOrDefault(rains[i], -1);
-                map.put(rains[i], i);
                 if(lastOccur != -1){
-                    Integer noRain = set.ceiling(lastOccur);
-                    if(noRain == null){
+                    int pi = find(lastOccur);
+                    if(nums[pi] != 0){
                         return new int[]{};
                     }
-                    set.remove(noRain);
-                    ans[noRain] = rains[i];
+                    nums[pi] = -1;
+                    result[pi] = rains[i];
                 }
+                map.put(rains[i], i);
+                if(prev!=-1 && nums[find(prev)]!=0)parent[prev] = i;
+                prev = i;
             }
         }
-        for(int day: set){
-            ans[day] = 1;
+
+        for(int i=0; i<n; i++){
+            if(rains[i] == 0 && result[i] == -1){
+                result[i] = 1;
+            }
         }
-        return ans;
+        return result;
     }
 }
