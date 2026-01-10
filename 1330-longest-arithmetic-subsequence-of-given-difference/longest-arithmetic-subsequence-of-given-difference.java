@@ -3,7 +3,7 @@ class Solution {
         int n = arr.length;
         int[] dp = new int[n];
         Arrays.fill(dp, 1);
-        int[] freq = new int[100000];
+        int[] freq = new int[40001];
         Arrays.fill(freq, -1);
 
         int res = Integer.MIN_VALUE;
