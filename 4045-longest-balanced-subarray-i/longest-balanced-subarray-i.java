@@ -3,6 +3,7 @@ class Solution {
         int n = nums.length;
         int res = 0;
         for(int i=0; i<n; i++){
+            if(res > n-i+1)continue;
             Set<Integer> even = new HashSet<>();
             Set<Integer> odd = new HashSet<>();
             for(int j=i; j<n; j++){
