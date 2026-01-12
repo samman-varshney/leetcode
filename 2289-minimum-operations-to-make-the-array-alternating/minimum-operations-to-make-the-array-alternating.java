@@ -37,7 +37,7 @@ class Solution {
                 element4 = element;
             }
         }
-        System.out.println("element1 "+element1+" freq1 "+freq1+"\nelement2 "+element2+" freq2 "+freq2+"\nelement3 "+element3+" freq3 "+freq3+"\nelement4 "+element4+" freq4 "+freq4);
+        // System.out.println("element1 "+element1+" freq1 "+freq1+"\nelement2 "+element2+" freq2 "+freq2+"\nelement3 "+element3+" freq3 "+freq3+"\nelement4 "+element4+" freq4 "+freq4);
         if(element1 != element3){
             return n - freq1 - freq3;
         }else{
