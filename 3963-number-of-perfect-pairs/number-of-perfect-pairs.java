@@ -1,17 +1,4 @@
 class Solution {
-    public int upperbound(int[] nums, int val){
-        int n = nums.length;
-        int start  = 0, end = n-1;
-        while(start <= end){
-            int mid = start + (end - start)/2;
-            if(nums[mid] >= val){
-                end = mid-1;
-            }else{
-                start = mid+1;
-            }
-        }
-        return start;
-    }
     public long perfectPairs(int[] nums) {
         int n = nums.length;
         int[] absolute = new int[n];
@@ -21,9 +8,12 @@ class Solution {
 
         Arrays.sort(absolute);
         long res = 0;
+        int j = n-1;
         for(int i=n-1; i>0; i--){
-            int j = upperbound(absolute, (absolute[i]+1)/2);
-            res += i - j;
+            while(j>=0 && absolute[i] - absolute[j] <= absolute[j]){
+                j--;
+            }
+            res += i - j - 1;
         }
         return res;
     }
