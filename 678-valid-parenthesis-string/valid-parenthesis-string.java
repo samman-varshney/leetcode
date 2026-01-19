@@ -1,32 +1,33 @@
 class Solution {
     public boolean checkValidString(String s) {
         int n = s.length();
-        char[] str = s.toCharArray();
-        dp = new int[n][n+1];
-        for(int[] x: dp){
-            Arrays.fill(x, -1);
+        Stack<Character> st = new Stack<>();
+        for(int i=0; i<n; i++){
+            char c = s.charAt(i);
+            if(c == '(' || c == '*'){
+               st.push(c);
+            }else{
+                Stack<Character> temp = new Stack<>();
+                while(!st.isEmpty() && st.peek() == '*'){
+                    temp.push(st.pop());
+                }
+                if(st.isEmpty() && temp.isEmpty() )return false;
+                if(!st.isEmpty())st.pop();else temp.pop();
+                while(!temp.isEmpty()){
+                    st.push(temp.pop());
+                }
+            }
         }
-        return helper(str, 0, 0);
-    }
-    int[][] dp;
-    public boolean helper(char[] s, int i, int o){
-        if(i >= s.length)
-            return o == 0;
-        
-        if(o < 0){
-            return false;
+        int star = 0;
+        while(!st.isEmpty()){
+            if(st.pop() == '*'){
+                star++;
+            }else if(star <= 0){
+                return false;
+            }else{
+                star--;
+            }
         }
-
-        if(dp[i][o] != -1){
-            return dp[i][o] == 1;
-        }
-        boolean res = false;
-        if(s[i] == '*'){
-            res = helper(s, i+1, o+1) || helper(s, i+1, o-1) || helper(s, i+1, o);
-        }else{
-            res = helper(s, i+1, o+(s[i]=='('?1:-1));
-        }
-        dp[i][o] = res?1:0;
-        return res;
+        return true;
     }
 }
