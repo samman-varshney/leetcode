@@ -15,7 +15,6 @@ class Solution {
             st.push(i);
         }
 
-        System.out.println(Arrays.toString(left));
         long res = 0;
         HashMap<Integer, List<Integer>> map = new HashMap<>();
         for(int i=0; i<n; i++){
