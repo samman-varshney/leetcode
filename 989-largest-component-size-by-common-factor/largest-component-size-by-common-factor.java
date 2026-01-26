@@ -38,13 +38,17 @@ class Solution {
         HashMap<Integer, Integer> map = new HashMap<>();
 
         for(int i=0; i<n; i++){
-            for(int j=2; j*j<=nums[i]; j++){
-                if(nums[i]%j == 0){
-                    helper(map, j, i, nums);
-                    helper(map, nums[i]/j, i, nums);
+           
+            int x = nums[i];
+            for(int p = 2; p * p <= x; p++){
+                if(x % p == 0){
+                    helper(map, p, i, nums);
+                    while(x % p == 0) x /= p;
                 }
             }
-            helper(map, nums[i], i, nums);
+            if(x > 1){
+                helper(map, x, i, nums);
+            }
         }
 
         
