@@ -10,20 +10,11 @@
  */
 class Solution {
     public int getDecimalValue(ListNode head) {
-        Stack<Integer> st = new Stack<>();
-        ListNode node = head;
-        while(node != null){
-            st.push(node.val);
-            node = node.next;
-        }
-
         int res = 0;
-        int n = st.size();
-        for(int i=0; i<n; i++){
-            int bit = st.pop();
-            if(bit == 1){
-                res |= 1<<i;
-            }
+        while(head != null){
+            res *= 2;
+            res += head.val;
+            head = head.next;
         }
         return res;
     }
