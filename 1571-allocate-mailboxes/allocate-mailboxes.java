@@ -1,54 +1,59 @@
 class Solution {
-    long[] prefix, suffix;
-    long[][] dp;
     int n;
     int[] nums;
-    public long median(int start, int end){
-        int med = (start + end)/2;
-        long right = prefix[end+1] - prefix[med+1] - nums[med]*(end - med);
-        long left = nums[med]*(med - start) - (suffix[start] - suffix[med]);
-        return right + left;
+    long[] prefix, suffix;
+
+    // cost of serving [l..r] with 1 mailbox
+    long cost(int l, int r) {
+        int m = (l + r) >> 1;
+        long left = (long) nums[m] * (m - l) - (suffix[l] - suffix[m]);
+        long right = (prefix[r + 1] - prefix[m + 1]) - (long) nums[m] * (r - m);
+        return left + right;
     }
 
-    public long helper(int i, int k){
-        if(i>=n){
-            return 0;
-        }
-        if(k == 0){
-            return Integer.MAX_VALUE;
-        }
-        if(k == 1){
-            return median(i, n-1);
-        }
+    // returns {totalCost, mailboxCount}
+    long[] solve(long lambda) {
+        long[] dp = new long[n + 1];
+        int[] cnt = new int[n + 1];
 
-        if(dp[i][k] != -1){
-            return dp[i][k];
-        }
+        Arrays.fill(dp, (long) 1e18);
+        dp[0] = 0;
 
-        long res = Integer.MAX_VALUE;
-        for(int j=n-k; j>=i; j--){
-            res = Math.min(res, median(i, j)+helper(j+1, k-1));
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < i; j++) {
+                long val = dp[j] + cost(j, i - 1) + lambda;
+                if (val < dp[i]) {
+                    dp[i] = val;
+                    cnt[i] = cnt[j] + 1;
+                }
+            }
         }
-
-        return dp[i][k] = res;
-        
+        return new long[]{dp[n], cnt[n]};
     }
 
-    public int minDistance(int[] nums, int k) {
-        this.nums = nums;
-        n = nums.length;
-        prefix = new long[n+1];
-        suffix = new long[n+1];
+    public int minDistance(int[] houses, int k) {
+        nums = houses;
         Arrays.sort(nums);
-        for(int i=1; i<=n; i++)
-            prefix[i] = prefix[i-1] + nums[i-1];
-        for(int i=n-1; i>=0; i--)
-            suffix[i] = suffix[i+1] + nums[i];
-        dp = new long[n][k+1];
-        for(long[] x: dp){
-            Arrays.fill(x, -1);
-        }
-        return (int)helper(0, k);
+        n = nums.length;
 
+        prefix = new long[n + 1];
+        suffix = new long[n + 1];
+
+        for (int i = 1; i <= n; i++)
+            prefix[i] = prefix[i - 1] + nums[i - 1];
+
+        for (int i = n - 1; i >= 0; i--)
+            suffix[i] = suffix[i + 1] + nums[i];
+
+        long lo = 0, hi = (long) 1e12;
+        while (lo < hi) {
+            long mid = (lo + hi) >> 1;
+            long[] res = solve(mid);
+            if (res[1] > k) lo = mid + 1;
+            else hi = mid;
+        }
+
+        long[] finalRes = solve(lo);
+        return (int) (finalRes[0] - lo * k);
     }
 }
