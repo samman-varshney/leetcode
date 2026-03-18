@@ -13,6 +13,7 @@ class Solution {
 
         int count = 0;
         for(int i=0; i<n; i++){
+            if(prefix[i+1][1] > k)break;
             for(int j=0; j<m; j++){
                 if(prefix[i+1][j+1] > k)break;
                 count++;
