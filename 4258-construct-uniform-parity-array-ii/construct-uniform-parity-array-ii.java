@@ -8,6 +8,6 @@ class Solution {
             min = Math.min(min, nums1[i]);
         }
 
-        return min%2 == 1 || allEven==0;
+        return (min&1) == 1 || allEven==0;
     }
 }
