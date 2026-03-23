@@ -1,24 +1,28 @@
 class Solution {
     public int[][] insert(int[][] intervals, int[] ntrl) {
-        TreeMap<Integer, Integer> map = new TreeMap<>();
+        int[] map = new int[100001];
+        Arrays.fill(map, Integer.MIN_VALUE);
+
         for(int[] itrl: intervals){
-            map.put(itrl[0], map.getOrDefault(itrl[0], 0)+1);
-            map.put(itrl[1], map.getOrDefault(itrl[1], 0)-1);
+            map[itrl[0]] = map[itrl[0]]==Integer.MIN_VALUE?1:map[itrl[0]]+1;
+            map[itrl[1]] = map[itrl[1]]==Integer.MIN_VALUE?-1:map[itrl[1]]-1;
         }
 
-        map.put(ntrl[0], map.getOrDefault(ntrl[0], 0)+1);
-        map.put(ntrl[1], map.getOrDefault(ntrl[1], 0)-1);
+        map[ntrl[0]] = map[ntrl[0]]==Integer.MIN_VALUE?1:map[ntrl[0]]+1;
+        map[ntrl[1]] = map[ntrl[1]]==Integer.MIN_VALUE?-1:map[ntrl[1]]-1;
 
         int sum = 0;
         List<List<Integer>> list = new ArrayList<>();
-        for(int key : map.keySet()){
+        for(int i=0; i<map.length; i++){
+            if(map[i] == Integer.MIN_VALUE)continue;
+            
             if(sum == 0){
                 list.add(new ArrayList<>());
-                list.get(list.size()-1).add(key);
+                list.get(list.size()-1).add(i);
             }
-            sum += map.get(key);
+            sum += map[i];
             if(sum == 0){
-                list.get(list.size()-1).add(key);
+                list.get(list.size()-1).add(i);
             }
         }
 
