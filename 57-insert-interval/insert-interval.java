@@ -1,6 +1,11 @@
 class Solution {
     public int[][] insert(int[][] intervals, int[] ntrl) {
-        int[] map = new int[100001];
+      
+        int max = Math.max(ntrl[0], ntrl[1]);
+        for(int[] it: intervals){
+            max = Math.max(max, Math.max(it[0], it[1]));
+        }
+        int[] map = new int[max+1];
         Arrays.fill(map, Integer.MIN_VALUE);
 
         for(int[] itrl: intervals){
