@@ -18,7 +18,7 @@ class Solution {
         Arrays.sort(events, (a, b)->{
             return a[1]-b[1];
         });
-        int limit = 2*events[n-1][1];
+        int limit = events[n-1][1]+10;
         
         parent = new int[limit];
         for(int i=0; i<limit; i++){
