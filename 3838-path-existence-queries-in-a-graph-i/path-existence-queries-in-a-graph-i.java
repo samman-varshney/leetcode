@@ -31,13 +31,10 @@ class Solution {
 
         int l = 0, r = 1;
         while(l < n){
-            while(r < n && nums[l] + maxDiff >= nums[r])
+            while(r < n && nums[l] + maxDiff >= nums[r]){
+                union(l, r);
                 r++;
-            
-            for(int i=l+1; i<r; i++){
-                union(l, i);
             }
-
             l = Math.max(l+1, r-1);
             r = l+1;
         }
