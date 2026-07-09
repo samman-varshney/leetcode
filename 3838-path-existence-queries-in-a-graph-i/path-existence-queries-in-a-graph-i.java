@@ -29,7 +29,7 @@ class Solution {
             size[i] = 1;
         }
 
-        int l = 0, r = 0;
+        int l = 0, r = 1;
         while(l < n){
             while(r < n && nums[l] + maxDiff >= nums[r])
                 r++;
@@ -39,7 +39,7 @@ class Solution {
             }
 
             l = Math.max(l+1, r-1);
-            r = l;
+            r = l+1;
         }
 
         boolean[] result = new boolean[queries.length];
