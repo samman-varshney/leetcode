@@ -41,17 +41,13 @@ class Solution {
             union(u, v);
         }
 
-        // System.out.println(Arrays.toString(edge));
-        // System.out.println(Arrays.toString(size));
-
-        int[] covered = new int[n];
+        
         int count = 0;
         for(int i=0; i<n; i++){
-            int u = find(i);
-            if(covered[u] == 1)continue;
-            covered[u] = 1;
+            
+            if(find(i) != i)continue;
 
-            if(edge[u] == size[u] * (size[u] - 1)/2)
+            if(edge[i] == size[i] * (size[i] - 1)/2)
                 count++;
         }
 
