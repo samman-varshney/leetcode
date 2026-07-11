@@ -34,8 +34,8 @@ class Solution {
 
             union(u, v);
         }
-        System.out.println(Arrays.toString(size));
-        System.out.println(Arrays.toString(parent));
+        // System.out.println(Arrays.toString(size));
+        // System.out.println(Arrays.toString(parent));
         int[] covered = new int[n];
         int count = 0;
         for(int i=0; i<n; i++){
@@ -48,7 +48,7 @@ class Solution {
                     edgeCount++;
                 }
             }
-            System.out.println(edgeCount);
+            //System.out.println(edgeCount);
             // for a complete graph the number of edges are n * (n - 1)/2
 
             if(edgeCount == size[u] * (size[u] - 1)/2)
