@@ -1,12 +1,4 @@
-SELECT id
-FROM (
-    SELECT
-        id,
-        temperature,
-        recordDate,
-        LAG(temperature) OVER (ORDER BY recordDate) AS prev_temperature,
-        LAG(recordDate) OVER (ORDER BY recordDate) AS prev_date
-    FROM Weather
-) w
-WHERE temperature > prev_temperature
-  AND recordDate - prev_date = 1;
+select w1.id from
+Weather w1
+join Weather w2
+on w1.recordDate - w2.recordDate = 1 and w1.temperature > w2.temperature;
