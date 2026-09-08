@@ -9,7 +9,7 @@ class Solution {
         long mod = 1000000007;
 
         for(int i=n-1; i>=0; i--){
-            dp[i] = ((2l * dp[i+1])%mod - dp[lastOccurence[s[i]-'a'] + 1] + mod) %mod;
+            dp[i] = (2l * dp[i+1] - dp[lastOccurence[s[i]-'a'] + 1] + mod) %mod;
             lastOccurence[s[i]-'a'] = i;
         }
 
