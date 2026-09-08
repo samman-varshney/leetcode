@@ -1,29 +1,27 @@
 class Solution {
 
-    char[] s, t;
-    int[][] dp;
-    
-    public int numDistinct(String s, String t) {
-        this.s = s.toCharArray();
-        this.t = t.toCharArray();
-        int n = s.length(), m = t.length();
-        dp = new int[n][m];
-        for(int[] x: dp)
-            Arrays.fill(x, -1);
+    public int numDistinct(String str, String tr) {
+        int n = str.length(), m = tr.length();
+        if(m > n)return 0;
 
-        return helper(n-1, m-1);
-    }
+        char[] s = str.toCharArray();
+        char[] t = tr.toCharArray();
 
-    public int helper(int i, int j){
-        if(j < 0)return 1;
-        if(i < 0)return 0;
-        if(dp[i][j] != -1)return dp[i][j];
-        int count = 0;
-        if(s[i] == t[j])
-            count += helper(i-1, j-1);
-        
-        count += helper(i-1, j);
+        int[][] dp = new int[n+1][m+1];
+        for(int i=0; i<=n; i++){
+            dp[i][0] = 1;
+        }
 
-        return dp[i][j] = count;
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(s[i] == t[j]){
+                    dp[i+1][j+1] += dp[i][j];
+                }
+                dp[i+1][j+1] += dp[i][j+1];
+            }   
+        }
+
+        return dp[n][m];
     }
 }
