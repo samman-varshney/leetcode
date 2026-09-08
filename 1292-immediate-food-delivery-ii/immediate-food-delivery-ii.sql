@@ -1,18 +1,10 @@
-WITH first_orders AS (
-    SELECT
+with first_orders as (
+    select  
         *,
-        ROW_NUMBER() OVER (
-            PARTITION BY customer_id
-            ORDER BY order_date
-        ) AS rn
-    FROM delivery
+        row_number() over(partition by customer_id order by order_date) as rn
+        from delivery
 )
-SELECT
-    ROUND(
-        100.0 * COUNT(*) FILTER (
-            WHERE order_date = customer_pref_delivery_date
-        ) / COUNT(*),
-        2
-    ) AS immediate_percentage
-FROM first_orders
-WHERE rn = 1;
+select 
+    round( count(*) filter (where order_date = customer_pref_delivery_date) * 100.0 / count(*), 2) immediate_percentage
+    from first_orders
+    where rn = 1;
