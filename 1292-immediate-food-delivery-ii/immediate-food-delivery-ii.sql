@@ -1,22 +1,18 @@
--- Write your PostgreSQL query statement belo
-
-
-select 
-    round( 
-            count(*) filter (where first_order = customer_pref_delivery_date) * 100.0 / count(*),
-            2
-        ) as immediate_percentage 
-from 
-    (
-        select 
-            customer_id, 
-            MIN(order_date) first_order
-        from delivery
-        group by 
-            customer_id 
-    ) as w
-join delivery d
-on w.customer_id = d.customer_id
-    and w.first_order = d.order_date;
-
-
+WITH first_orders AS (
+    SELECT
+        *,
+        ROW_NUMBER() OVER (
+            PARTITION BY customer_id
+            ORDER BY order_date
+        ) AS rn
+    FROM delivery
+)
+SELECT
+    ROUND(
+        100.0 * COUNT(*) FILTER (
+            WHERE order_date = customer_pref_delivery_date
+        ) / COUNT(*),
+        2
+    ) AS immediate_percentage
+FROM first_orders
+WHERE rn = 1;
