@@ -1,8 +1,10 @@
-# Write your MySQL query statement below
-select teacher_id, count(*) cnt
-from (
-    select teacher_id, subject_id
+with ranked as (
+    select 
+        *,
+        dense_rank() over(partition by teacher_id order by subject_id asc) cnt
     from teacher
-    group by teacher_id, subject_id
-) w
+)
+
+select teacher_id, max(cnt) cnt
+from ranked
 group by teacher_id;
