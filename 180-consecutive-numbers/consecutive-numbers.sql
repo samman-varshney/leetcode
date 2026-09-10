@@ -1,8 +1,10 @@
-with temp as (
-    select *,
-    lag(id, 2) over(partition by num order by id) third
-    from logs
-)
-select distinct num "ConsecutiveNums"
-from temp
-where id - third = 2;
+select 
+    distinct l1.num consecutivenums
+from
+logs l1,
+logs l2,
+logs l3
+where l1.id - 1 = l2.id
+and l2.id - 1 = l3.id
+and l1.num = l2.num 
+and l2.num = l3.num;
