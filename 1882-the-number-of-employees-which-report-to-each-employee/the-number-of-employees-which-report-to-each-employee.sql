@@ -1,4 +1,4 @@
--- Write your PostgreSQL query statement below
+
 select
     managers.employee_id,
     managers.name,
