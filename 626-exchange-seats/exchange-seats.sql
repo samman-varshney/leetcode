@@ -1,11 +1,15 @@
 # Write your MySQL query statement below
 select
-s1.id,
-coalesce(s2.student, s1.student) student
-from seat s1
-left join seat s2
-on (s1.id % 2 = 0
-and s1.id = s2.id+1)
-or (s1.id %2 = 1
-and s1.id+1 = s2.id)
-order by s1.id;
+id,
+case
+    when id%2 = 0
+        then previous
+        else next
+    end student
+from
+(select
+*,
+lag(student, 1, student) over(order by id) previous,
+lead(student, 1, student) over(order by id) next
+from seat) s
+order by id;
