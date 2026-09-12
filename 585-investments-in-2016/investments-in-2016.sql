@@ -1,15 +1,41 @@
--- Write your PostgreSQL query statement below
-select round(sum(tiv_2016)::numeric, 2) tiv_2016
-from insurance 
-where pid in (select distinct i1.pid
-from insurance i1
-join insurance i2
-on i1.tiv_2015 = i2.tiv_2015 
-and i1.pid != i2.pid
-where (i1.lat, i1.lon) in
+with sorted_insurance as (
+    select 
+        *,
+        lag(tiv_2015, 1) over(order by tiv_2015) previous,
+        lead(tiv_2015, 1) over(order by tiv_2015) next
+    from insurance 
+),
 
-(select
-lat, lon
-from insurance
-group by lat, lon
-having count(*) = 1));
+unique_location as  (
+    select
+        (select tiv_2015 from sorted_insurance si1 where si1.lat = si2.lat and si1.lon = si2.lon),
+        (select previous from sorted_insurance si1 where si1.lat = si2.lat and si1.lon = si2.lon),
+        (select next from sorted_insurance si1 where si1.lat = si2.lat and si1.lon = si2.lon),
+        (select tiv_2016 from sorted_insurance si1 where si1.lat = si2.lat and si1.lon = si2.lon)
+    from
+        sorted_insurance si2
+    group by
+        lat,
+        lon
+    having
+        count(*) = 1
+)
+
+select 
+    round(
+            sum(
+                    case 
+                        when 
+                            tiv_2015 = previous 
+                        or 
+                            tiv_2015 = next 
+                        then 
+                            tiv_2016 
+                        else 
+                            0
+                        end
+                )::numeric,
+                2
+        ) tiv_2016
+from unique_location;
+
