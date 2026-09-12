@@ -3,24 +3,16 @@ with sorted_insurance as (
         *,
         lag(tiv_2015, 1) over(order by tiv_2015) previous,
         lead(tiv_2015, 1) over(order by tiv_2015) next
+        
     from insurance 
 ),
-
-unique_location as  (
+unique_location as (
     select
-        (select tiv_2015 from sorted_insurance si1 where si1.lat = si2.lat and si1.lon = si2.lon),
-        (select previous from sorted_insurance si1 where si1.lat = si2.lat and si1.lon = si2.lon),
-        (select next from sorted_insurance si1 where si1.lat = si2.lat and si1.lon = si2.lon),
-        (select tiv_2016 from sorted_insurance si1 where si1.lat = si2.lat and si1.lon = si2.lon)
+        *,
+        count(*) over(partition by lon, lat) size
     from
-        sorted_insurance si2
-    group by
-        lat,
-        lon
-    having
-        count(*) = 1
+        sorted_insurance
 )
-
 select 
     round(
             sum(
@@ -37,5 +29,6 @@ select
                 )::numeric,
                 2
         ) tiv_2016
-from unique_location;
+from unique_location
+where size = 1;
 
