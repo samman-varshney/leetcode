@@ -1,34 +1,12 @@
-with sorted_insurance as (
-    select 
+WITH t AS (
+    SELECT
         *,
-        lag(tiv_2015, 1) over(order by tiv_2015) previous,
-        lead(tiv_2015, 1) over(order by tiv_2015) next
-        
-    from insurance 
-),
-unique_location as (
-    select
-        *,
-        count(*) over(partition by lon, lat) size
-    from
-        sorted_insurance
+        COUNT(*) OVER (PARTITION BY tiv_2015) AS tiv_count,
+        COUNT(*) OVER (PARTITION BY lat, lon) AS location_count
+    FROM insurance
 )
-select 
-    round(
-            sum(
-                    case 
-                        when 
-                            tiv_2015 = previous 
-                        or 
-                            tiv_2015 = next 
-                        then 
-                            tiv_2016 
-                        else 
-                            0
-                        end
-                )::numeric,
-                2
-        ) tiv_2016
-from unique_location
-where size = 1;
-
+SELECT
+    ROUND(SUM(tiv_2016)::numeric, 2) AS tiv_2016
+FROM t
+WHERE tiv_count > 1
+  AND location_count = 1;
