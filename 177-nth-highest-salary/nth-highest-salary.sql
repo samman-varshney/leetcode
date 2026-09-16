@@ -3,19 +3,27 @@ BEGIN
   RETURN QUERY 
    
         select 
-            w.salary 
-        from 
+            e.salary
+        from employee e
+        group by
+            e.salary
+        order by
+            e.salary desc
+        limit 1
+        offset 
         (
-            select 
-                e.salary,
-                rank() over(order by e.salary desc) rk
-            from employee e
-            group by 
-                e.salary
-        ) w
-        where rk = N;
-    
-      
+            
+            case 
+            when N > 0 
+            then N - 1 
+            else 
+            (
+                select 
+                    count( distinct e2.salary ) 
+                from employee e2
+            ) 
+            end 
+        );
 
 END;
 $$ LANGUAGE plpgsql;
