@@ -1,29 +1,32 @@
-
-select
-id,
-visit_date,
-people
-from (
-        select
+with t as (
+    select
         *,
-        lead(consecutive, 1) over(order by id) next_consecutive,
-        lag(consecutive, 1) over(order by id) previous_consecutive
-        from (
-            select
-            *,
-            id = previous + 1 and id = next - 1 as consecutive
-            from (
-                select
-                *,
-                lag(id, 1) over(order by id) previous,
-                lead(id, 1) over(order by id) next
-                from stadium s
-                where people >= 100
-            )
-        )
-    )
-where 
-consecutive 
-or (previous + 1 = id and previous_consecutive)
-or (next - 1 = id and next_consecutive)
-order by visit_date;
+        lag(id, 1) over(order by id) previous_id
+    from
+        stadium
+    where people >= 100
+),
+
+u as (
+    select
+        *,
+        sum(case when id = previous_id + 1 then 0 else 1 end) over(order by id) rank
+    from 
+        t
+),
+
+v as (
+    select
+        *,
+        count(*) over(partition by rank) as size
+    from
+        u
+)
+
+select 
+    id,
+    visit_date,
+    people
+from 
+    v
+where size >= 3;
