@@ -1,10 +1,9 @@
-select
-    product_id,
-    (select product_name from product where product_id = sales.product_id)
-from 
-    sales
-group by 
-    product_id
-having COUNT(*) FILTER (
-    WHERE sale_date NOT BETWEEN DATE '2019-01-01' AND DATE '2019-03-31'
-) = 0;
+SELECT
+    s.product_id,
+    p.product_name
+FROM sales s
+JOIN product p
+    ON p.product_id = s.product_id
+GROUP BY s.product_id, p.product_name
+HAVING MIN(s.sale_date) >= DATE '2019-01-01'
+   AND MAX(s.sale_date) <= DATE '2019-03-31';
